@@ -15,11 +15,10 @@ const Header = () => {
   return (
     <AppBar position="static" sx={{ background: "#141414", px: 2 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Left Side: Logo + Navigation */}
+     
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <img src="/logo.png" alt="Netflix" style={{ height: 40 }} />
-
-          {/* Navigation Buttons */}
+    
           {[
             "Home",
             "TV Shows",
@@ -46,7 +45,7 @@ const Header = () => {
           ))}
         </Box>
 
-        {/* Right Side: Search + Notification + Profile */}
+     
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Box
             sx={{
