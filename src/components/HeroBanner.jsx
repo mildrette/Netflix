@@ -5,31 +5,31 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const movieList = [
   {
-    background: "/banner1.jpg",
+    background: "/1.jpeg",
     title: "Lupin",
     description:
       "A gentleman thief and master of disguise sets out to avenge his father’s death.",
   },
   {
-    background: "/banner2.jpg",
+    background: "/2.jpg",
     title: "Stranger Things",
     description:
       "A young boy vanishes, and a small town uncovers terrifying supernatural forces.",
   },
   {
-    background: "/banner3.jpg",
+    background: "/3.jpeg",
     title: "The Witcher",
     description:
       "Geralt of Rivia, a monster hunter, struggles to find his place in a world of beasts and betrayal.",
   },
   {
-    background: "/banner4.jpg",
+    background: "/4.jpeg",
     title: "Wednesday",
     description:
       "A twisted coming-of-age story following Wednesday Addams through school and secrets.",
   },
   {
-    background: "/banner5.jpg",
+    background: "/5.jpeg",
     title: "Money Heist",
     description:
       "A criminal mastermind recruits eight people to carry out a massive heist on Spain’s Royal Mint.",
@@ -47,12 +47,12 @@ const HeroBanner = () => {
         let next;
         do {
           next = Math.floor(Math.random() * movieList.length);
-        } while (next === prev); // ensure it doesn't repeat the same
+        } while (next === prev);
         return next;
       });
-    }, 120000); // 2 minutes
+    }, 120000);
 
-    return () => clearInterval(interval); // cleanup
+    return () => clearInterval(interval);
   }, []);
 
   const { background, title, description } = movieList[currentIndex];
@@ -73,7 +73,6 @@ const HeroBanner = () => {
         transition: "background-image 1s ease-in-out",
       }}
     >
-      {/* Gradient overlay */}
       <Box
         sx={{
           position: "absolute",
@@ -86,7 +85,6 @@ const HeroBanner = () => {
         }}
       />
 
-      {/* Content */}
       <Box sx={{ position: "relative", zIndex: 2, maxWidth: "700px" }}>
         <Typography
           variant="h3"
