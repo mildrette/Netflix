@@ -47,7 +47,6 @@ const Header = () => {
     <>
       <AppBar position="static" sx={{ backgroundColor: "#141414" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          {/* Left Side */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <img src="/Netflix.png" alt="netflix" style={{ height: 40 }} />
 
