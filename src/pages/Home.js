@@ -18,7 +18,7 @@ const Home = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [currentRecIndex, setCurrentRecIndex] = useState(0);
 
-  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [ setIsTrailerOpen] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState("");
 
   const rowRefs = useRef({});
