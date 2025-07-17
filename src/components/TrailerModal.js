@@ -1,54 +1,46 @@
+// src/components/TrailerModal.js
 import React from 'react';
+import { Modal, Box, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
-const TrailerModal = ({ isOpen, onClose, trailerUrl }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <button style={styles.closeBtn} onClick={onClose}>X</button>
-        <iframe
-          width="100%"
-          height="400"
-          src={trailerUrl}
-          title="Trailer"
-          frameBorder="0"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-        />
-      </div>
-    </div>
-  );
+const style = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'black',
+  boxShadow: 24,
+  p: 2,
+  outline: 'none',
+  maxWidth: '80vw',
+  maxHeight: '80vh',
 };
 
-const styles = {
-  overlay: {
-    position: 'fixed',
-    top:0, left:0, right:0, bottom:0,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  modal: {
-    width: '80%',
-    maxWidth: 800,
-    background: '#000',
-    padding: 20,
-    borderRadius: 8,
-    position: 'relative',
-  },
-  closeBtn: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    fontSize: 18,
-    color: '#fff',
-    background: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-  },
+const TrailerModal = ({ url, onClose }) => {
+  return (
+    <Modal open={Boolean(url)} onClose={onClose} aria-labelledby="modal-trailer">
+      <Box sx={style}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ position: 'absolute', top: 8, right: 8, color: 'white' }}
+        >
+          <CloseIcon />
+        </IconButton>
+        {url && (
+          <iframe
+            width="100%"
+            height="400"
+            src={url}
+            title="Movie Trailer"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )}
+      </Box>
+    </Modal>
+  );
 };
 
 export default TrailerModal;

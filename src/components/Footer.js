@@ -10,7 +10,7 @@ const Footer = () => {
           'Ways to Watch', 'Terms of Use', 'Privacy', 'Cookie Preferences',
           'Corporate Information', 'Contact Us'
         ].map((link, i) => (
-          <a key={i} href="#" style={styles.link}>{link}</a>
+          <a key={i} href="/" style={styles.link}>{link}</a>
         ))}
       </div>
       <p style={styles.text}>© 2025 Netflix Clone. All rights reserved.</p>

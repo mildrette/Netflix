@@ -17,6 +17,7 @@ const Home = () => {
   const [movieData, setMovieData] = useState({});
   const [recommendations, setRecommendations] = useState([]);
   const [currentRecIndex, setCurrentRecIndex] = useState(0);
+
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState("");
 
@@ -61,27 +62,29 @@ const Home = () => {
     return () => clearInterval(interval);
   }, [recommendations]);
 
-  const openTrailer = (url) => {
+  const openTrailer = (movie) => {
+    // If you have a trailer URL, use it; else fallback to RickRoll :)
+    const url = movie.trailerUrl || `https://www.youtube.com/embed/dQw4w9WgXcQ`;
     setTrailerUrl(url);
     setIsTrailerOpen(true);
   };
 
   const closeTrailer = () => {
-    setTrailerUrl("");
     setIsTrailerOpen(false);
+    setTrailerUrl("");
   };
 
   const scrollLeft = (category) => {
     const container = rowRefs.current[category];
     if (container) {
-      container.scrollBy({ left: -300, behavior: 'smooth' });
+      container.scrollBy({ left: -300, behavior: "smooth" });
     }
   };
 
   const scrollRight = (category) => {
     const container = rowRefs.current[category];
     if (container) {
-      container.scrollBy({ left: 300, behavior: 'smooth' });
+      container.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
 
@@ -95,7 +98,7 @@ const Home = () => {
 
       {Object.keys(movieData).map((category) => (
         <div key={category} className="category-row">
-          <h2 className="category-title">{category}</h2>
+          <h2>{category}</h2>
           <div className="carousel-container">
             <button className="carousel-btn left" onClick={() => scrollLeft(category)}>
               &#10094;
@@ -106,15 +109,20 @@ const Home = () => {
               ref={(el) => (rowRefs.current[category] = el)}
             >
               {movieData[category].map((movie, index) => (
-                <div key={index} className="movie-card">
+                <div
+                  key={index}
+                  className="movie-card"
+                  onClick={() => openTrailer(movie)}
+                  style={{ cursor: "pointer" }}
+                >
                   <img
                     src={movie["#IMG_POSTER"] || "https://via.placeholder.com/160x240"}
                     alt={movie["#TITLE"]}
                     className="movie-image"
                   />
                   <div className="movie-info">
-                    <p className="movie-title">{movie["#TITLE"]}</p>
-                    <p className="movie-year">{movie["#YEAR"]}</p>
+                    <p>{movie["#TITLE"]}</p>
+                    <p>{movie["#YEAR"]}</p>
                   </div>
                 </div>
               ))}
@@ -127,8 +135,8 @@ const Home = () => {
         </div>
       ))}
 
-      {isTrailerOpen && <TrailerModal url={trailerUrl} onClose={closeTrailer} />}
-            <Footer />
+      <TrailerModal url={trailerUrl} onClose={closeTrailer} />
+      <Footer />
     </div>
   );
 };
