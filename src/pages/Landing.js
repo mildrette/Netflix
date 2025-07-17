@@ -8,7 +8,6 @@ const Landing = () => {
   return (
     <div className="landing-container">
       <div className="overlay" />
-
       <div className="landing-content">
         <h1 className="landing-title">Unlimited movies, TV shows, and more</h1>
         <h2 className="landing-subtitle">Watch anywhere. Cancel anytime.</h2>

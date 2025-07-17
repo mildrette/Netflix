@@ -1,116 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import MovieRecommendation from "../components/MovieRecommendation";
+import TrailerModal from '../components/TrailerModal';
+import Footer from '../components/Footer';
+import "../styles/Home.css";
+
+const categories = [
+  { title: "Trending", query: "trending" },
+  { title: "Marvel", query: "marvel" },
+  { title: "Harry Potter", query: "harry potter" },
+  { title: "Star Wars", query: "star wars" },
+  { title: "Top Rated", query: "top rated" },
+];
 
 const Home = () => {
-  const [movies, setMovies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filtered, setFiltered] = useState([]);
-  const navigate = useNavigate();
+  const [movieData, setMovieData] = useState({});
+  const [recommendations, setRecommendations] = useState([]);
+  const [currentRecIndex, setCurrentRecIndex] = useState(0);
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState("");
+
+  const rowRefs = useRef({});
 
   useEffect(() => {
-    // Fetch some initial movies on load
-    const fetchMovies = async () => {
+    const fetchData = async () => {
+      const newData = {};
       try {
-        const res = await axios.get('https://imdbapi.dev/api/movies?limit=20'); 
-        // NOTE: Replace with actual API endpoint & params from imdbapi.dev docs
-        setMovies(res.data.results || res.data); 
-        setFiltered(res.data.results || res.data);
-      } catch (error) {
-        console.error('Error fetching movies:', error);
+        const trendingRes = await axios.get(
+          "https://search.imdbot.workers.dev/?q=trending"
+        );
+        setRecommendations(trendingRes.data.description.slice(0, 5)); // top 5 recs
+      } catch (err) {
+        console.error("Error fetching trending recommendations", err);
       }
+
+      for (const category of categories) {
+        try {
+          const res = await axios.get(
+            `https://search.imdbot.workers.dev/?q=${category.query}`
+          );
+          newData[category.title] = res.data.description || [];
+        } catch (err) {
+          console.error(`Error fetching ${category.title}`, err);
+          newData[category.title] = [];
+        }
+      }
+      setMovieData(newData);
     };
-    fetchMovies();
+
+    fetchData();
   }, []);
 
   useEffect(() => {
-    if (!searchTerm) {
-      setFiltered(movies);
-    } else {
-      const filteredMovies = movies.filter(movie =>
-        movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFiltered(filteredMovies);
-    }
-  }, [searchTerm, movies]);
+    if (recommendations.length === 0) return;
 
-  const goToDetails = (id) => {
-    navigate(`/movie/${id}`);
+    const interval = setInterval(() => {
+      setCurrentRecIndex((prev) => (prev + 1) % recommendations.length);
+    }, 10000); // every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [recommendations]);
+
+  const openTrailer = (url) => {
+    setTrailerUrl(url);
+    setIsTrailerOpen(true);
+  };
+
+  const closeTrailer = () => {
+    setTrailerUrl("");
+    setIsTrailerOpen(false);
+  };
+
+  const scrollLeft = (category) => {
+    const container = rowRefs.current[category];
+    if (container) {
+      container.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = (category) => {
+    const container = rowRefs.current[category];
+    if (container) {
+      container.scrollBy({ left: 300, behavior: 'smooth' });
+    }
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={{ color: 'white', marginBottom: 20 }}>Welcome to Netflix Clone</h1>
-      <input
-        type="text"
-        placeholder="Search movies..."
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-        style={styles.searchInput}
+    <div className="home-container">
+      <MovieRecommendation
+        recommendations={recommendations}
+        currentIndex={currentRecIndex}
+        openTrailer={openTrailer}
       />
 
-      <div style={styles.grid}>
-        {filtered.length > 0 ? (
-          filtered.map(movie => (
+      {Object.keys(movieData).map((category) => (
+        <div key={category} className="category-row">
+          <h2 className="category-title">{category}</h2>
+          <div className="carousel-container">
+            <button className="carousel-btn left" onClick={() => scrollLeft(category)}>
+              &#10094;
+            </button>
+
             <div
-              key={movie.id || movie.imdb_id || movie._id}
-              style={styles.card}
-              onClick={() => goToDetails(movie.id || movie.imdb_id || movie._id)}
+              className="movie-row"
+              ref={(el) => (rowRefs.current[category] = el)}
             >
-              <img
-                src={movie.poster || movie.image || movie.posterurl} // adapt based on API
-                alt={movie.title}
-                style={styles.poster}
-              />
-              <div style={styles.title}>{movie.title}</div>
+              {movieData[category].map((movie, index) => (
+                <div key={index} className="movie-card">
+                  <img
+                    src={movie["#IMG_POSTER"] || "https://via.placeholder.com/160x240"}
+                    alt={movie["#TITLE"]}
+                    className="movie-image"
+                  />
+                  <div className="movie-info">
+                    <p className="movie-title">{movie["#TITLE"]}</p>
+                    <p className="movie-year">{movie["#YEAR"]}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))
-        ) : (
-          <p style={{ color: 'white' }}>No movies found.</p>
-        )}
-      </div>
+
+            <button className="carousel-btn right" onClick={() => scrollRight(category)}>
+              &#10095;
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {isTrailerOpen && <TrailerModal url={trailerUrl} onClose={closeTrailer} />}
+            <Footer />
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundColor: '#141414',
-    minHeight: '100vh',
-    padding: 20,
-  },
-  searchInput: {
-    width: '100%',
-    padding: 10,
-    fontSize: 18,
-    borderRadius: 6,
-    border: 'none',
-    marginBottom: 30,
-    outline: 'none',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-    gap: 20,
-  },
-  card: {
-    cursor: 'pointer',
-    borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#222',
-    transition: 'transform 0.2s ease',
-  },
-  poster: {
-    width: '100%',
-    display: 'block',
-  },
-  title: {
-    color: 'white',
-    padding: 10,
-    fontWeight: 'bold',
-    fontSize: 14,
-    textAlign: 'center',
-  },
 };
 
 export default Home;

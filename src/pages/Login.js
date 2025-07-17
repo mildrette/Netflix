@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -9,27 +9,16 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    // TEMPORARY login simulation
     if (email && password) {
       localStorage.setItem('user', JSON.stringify({ email }));
-      navigate('/profiles'); // redirect to profile selection page
+      navigate('/profiles');
     } else {
       alert('Please fill in both fields');
     }
   };
 
   return (
-    <>
-      <nav>
-        <a href="/">
-          <img
-            src="https://assets.codepen.io/12394909/Netflix-Logo.wine.png"
-            alt="Netflix Logo"
-          />
-        </a>
-      </nav>
-
+    <div className="login-page">
       <div className="form-wrapper">
         <h2>Log In</h2>
         <form onSubmit={handleLogin}>
@@ -65,14 +54,14 @@ const Login = () => {
         </form>
 
         <p>
-          New to Netflix? <a href="/signup">Sign up now</a>
+          New to Netflix? <Link to="/signup">Sign up now</Link>
         </p>
         <small>
           This page is protected by Google reCAPTCHA to ensure you're not a bot.{' '}
           <a href="#">Learn more.</a>
         </small>
       </div>
-    </>
+    </div>
   );
 };
 
