@@ -48,7 +48,14 @@ const Login = () => {
               <label htmlFor="remember-me">Remember me</label>
             </div>
             <div>
-              <a href="#">Need help?</a>
+              {/* Replaced with a button if no valid route exists */}
+              <button
+                type="button"
+                className="link-button"
+                onClick={() => alert('Support not implemented yet')}
+              >
+                Need help?
+              </button>
             </div>
           </div>
         </form>
@@ -58,7 +65,13 @@ const Login = () => {
         </p>
         <small>
           This page is protected by Google reCAPTCHA to ensure you're not a bot.{' '}
-          <a href="#">Learn more.</a>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => alert('More info coming soon')}
+          >
+            Learn more.
+          </button>
         </small>
       </div>
     </div>
