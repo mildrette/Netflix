@@ -48,7 +48,6 @@ const Login = () => {
               <label htmlFor="remember-me">Remember me</label>
             </div>
             <div>
-              {/* Replaced with a button if no valid route exists */}
               <button
                 type="button"
                 className="link-button"
